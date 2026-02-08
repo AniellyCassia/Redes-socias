@@ -1,0 +1,14 @@
+MATCH (p:Postagem)-[:MARCADA_COM]->(i:Interesse {nome: 'IA'})
+MATCH (u:Usuário)-[c:CURTIU]->(p)
+RETURN p.conteúdo, count(c) AS total_curtidas
+ORDER BY total_curtidas DESC
+LIMIT 10
+
+MATCH (u:Usuário {handle: '@startup_user'})-[:SEGUE]->(amigo)-[:SEGUE]->(sugestao)
+WHERE NOT (u)-[:SEGUE]->(sugestao) AND u <> sugestao
+RETURN sugestao.nome, count(*) AS amigos_em_comum
+ORDER BY amigos_em_comum DESC
+
+MATCH (u1:Usuário)-[:INTERESSADO_EM]->(i:Interesse)<-[:INTERESSADO_EM]-(u2:Usuário)
+WHERE u1.handle < u2.handle
+RETURN i.nome, u1.nome, u2.nome
